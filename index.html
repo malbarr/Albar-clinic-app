@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>AlBar Health</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --navy: #1B2E4B;
+    --navy-dark: #12213A;
+    --navy-light: #243d62;
+    --gold: #C9A84C;
+    --gold-light: #e0bf72;
+    --gold-dark: #a8893a;
+    --white: #FFFFFF;
+    --bg: #f0f4f8;
+    --card-bg: #FFFFFF;
+    --text: #1a2535;
+    --text-muted: #6b7a8d;
+    --border: #e2e8f0;
+    --danger: #e53e3e;
+    --danger-bg: #fff5f5;
+    --success: #2f855a;
+    --success-bg: #f0fff4;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 2px 12px rgba(27,46,75,0.08);
+    --shadow-md: 0 4px 20px rgba(27,46,75,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow: hidden;
+  }
+
+  /* ── App Shell ── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg);
+    position: relative;
+  }
+
+  /* ── Header ── */
+  .app-header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 12px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 10;
+  }
+  .header-logo { display: flex; flex-direction: column; }
+  .header-logo .brand { font-size: 17px; font-weight: 800; color: var(--gold); letter-spacing: 0.5px; }
+  .header-logo .subtitle { font-size: 11px; color: rgba(255,255,255,0.65); font-weight: 400; }
+
+  /* ── Scrollable Content ── */
+  .page-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  .tab-panel { display: none; padding: 14px 12px 20px; }
+  .tab-panel.active { display: block; }
+
+  /* ── Bottom Nav ── */
+  .bottom-nav {
+    display: flex;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+    box-shadow: 0 -2px 10px rgba(27,46,75,0.08);
+    z-index: 10;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 600;
+    border-top: 2px solid transparent;
+    user-select: none;
+  }
+  .nav-item.active { color: var(--navy); border-top-color: var(--gold); }
+  .nav-item .nav-icon { font-size: 20px; line-height: 1; margin-bottom: 2px; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 4px 4px;
+    margin-bottom: 4px;
+  }
+
+  /* ── Hero Card ── */
+  .hero-card {
+    background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-light) 100%);
+    border-radius: var(--radius);
+    padding: 22px 18px;
+    margin-bottom: 14px;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; left: -30px;
+    width: 120px; height: 120px;
+    background: rgba(201,168,76,0.08);
+    border-radius: 50%;
+  }
+  .hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; right: -20px;
+    width: 80px; height: 80px;
+    background: rgba(201,168,76,0.06);
+    border-radius: 50%;
+  }
+  .hero-greeting { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 2px; }
+  .hero-name { font-size: 19px; font-weight: 800; color: var(--gold); margin-bottom: 2px; }
+  .hero-spec { font-size: 12px; color: rgba(255,255,255,0.75); }
+
+  /* ── Announcements ── */
+  .announcements-section { margin-bottom: 12px; }
+  .announcement-card {
+    background: linear-gradient(135deg, #fffbea, #fff8dc);
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .announcement-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .announcement-text { font-size: 13px; font-weight: 600; color: var(--navy); flex: 1; }
+  .announcement-date { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Quick Grid ── */
+  .quick-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .quick-btn {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    border: 1.5px solid transparent;
+  }
+  .quick-btn:active { transform: scale(0.97); border-color: var(--gold); }
+  .quick-btn .qb-icon { font-size: 26px; }
+  .quick-btn .qb-label { font-size: 12px; font-weight: 700; color: var(--navy); text-align: center; }
+
+  /* ── Tip Card ── */
+  .tip-card {
+    background: linear-gradient(135deg, var(--navy), var(--navy-light));
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+  .tip-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tip-text { font-size: 13px; color: rgba(255,255,255,0.88); line-height: 1.7; }
+
+  /* ── Doctor Profile ── */
+  .doctor-avatar {
+    width: 80px; height: 80px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+  }
+  .doctor-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .doctor-info .doc-name-ar { font-size: 17px; font-weight: 800; color: var(--navy); }
+  .doctor-info .doc-name-en { font-size: 12px; color: var(--text-muted); }
+  .doctor-info .doc-title { font-size: 12px; color: var(--gold-dark); font-weight: 700; margin-top: 2px; }
+
+  .spec-list { list-style: none; padding: 0; }
+  .spec-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .spec-list li:last-child { border-bottom: none; }
+  .spec-list li::before { content: '◆'; color: var(--gold); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+
+  .qual-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .qual-item:last-child { border-bottom: none; }
+  .qual-icon { width: 32px; height: 32px; background: rgba(201,168,76,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .qual-text .ql-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+  .qual-text .ql-sub { font-size: 11px; color: var(--text-muted); }
+
+  .position-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .position-row:last-child { border-bottom: none; }
+  .pos-dot { width: 8px; height: 8px; background: var(--gold); border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .pos-title { font-weight: 700; color: var(--navy); }
+  .pos-sub { font-size: 11px; color: var(--text-muted); }
+
+  .social-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .social-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .social-chip:active { background: var(--gold); border-color: var(--gold); color: var(--white); }
+
+  /* ── Instructions / Accordion ── */
+  .search-bar-wrap {
+    position: relative;
+    margin-bottom: 14px;
+  }
+  .search-bar {
+    width: 100%;
+    padding: 10px 40px 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    font-size: 13px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .search-bar:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.15); }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+
+  .instr-section { margin-bottom: 8px; }
+  .instr-section-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 10px 4px 6px;
+    letter-spacing: 0.5px;
+  }
+  .accordion {
+    background: var(--card-bg);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    margin-bottom: 6px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .accordion.highlighted { border-color: var(--gold); }
+  .accordion.hidden { display: none; }
+  .acc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    cursor: pointer;
+    user-select: none;
+    gap: 8px;
+  }
+  .acc-header-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+  .acc-code {
+    background: var(--navy);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .acc-title { font-size: 13px; font-weight: 700; color: var(--navy); }
+  .acc-chevron { font-size: 12px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+  .accordion.open .acc-chevron { transform: rotate(180deg); }
+  .acc-body {
+    display: none;
+    padding: 0 14px 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.75;
+    border-top: 1px solid var(--border);
+  }
+  .accordion.open .acc-body { display: block; }
+  .acc-body ul { padding-right: 16px; margin-top: 6px; }
+  .acc-body ul li { margin-bottom: 4px; }
+  .acc-body p { margin-top: 6px; }
+  .acc-body .note {
+    background: rgba(201,168,76,0.1);
+    border-right: 3px solid var(--gold);
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--navy);
+  }
+
+  .emergency-box {
+    background: var(--danger-bg);
+    border: 2px solid var(--danger);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .emergency-box .em-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--danger);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .emergency-box ul { padding-right: 18px; }
+  .emergency-box li { font-size: 13px; color: #c53030; margin-bottom: 4px; }
+  .emergency-call {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--danger);
+    color: var(--white);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .emergency-call:active { opacity: 0.85; }
+
+  .no-results {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 24px;
+    display: none;
+  }
+
+  /* ── Medicines Tab ── */
+  .med-list { list-style: none; padding: 0; }
+  .med-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .med-item:last-child { border-bottom: none; }
+  .med-icon { font-size: 20px; flex-shrink: 0; width: 30px; text-align: center; }
+  .med-name { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .med-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Contact Tab ── */
+  .clinic-block {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .clinic-block-header {
+    background: var(--navy);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .clinic-block-header .cbh-name { font-size: 14px; font-weight: 800; color: var(--gold); }
+  .clinic-block-header .cbh-sub { font-size: 11px; color: rgba(255,255,255,0.65); }
+  .clinic-block-body { padding: 12px 16px; }
+
+  .hours-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-day { color: var(--text); font-weight: 600; }
+  .hours-time { color: var(--gold-dark); font-weight: 700; font-size: 12px; }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .contact-row:last-child { border-bottom: none; }
+  .contact-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .contact-number { font-size: 13px; font-weight: 700; color: var(--navy); direction: ltr; }
+  .call-btn {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    flex-shrink: 0;
+  }
+  .call-btn:active { opacity: 0.8; }
+  .call-btn.gold { background: var(--gold); color: var(--navy); }
+  .call-btn.green { background: #25D366; }
+  .call-btn.wide { width: 100%; justify-content: center; padding: 12px; font-size: 14px; border-radius: var(--radius); }
+
+  /* ── Appointment Form ── */
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    direction: inherit;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
+  }
+  .form-textarea { resize: vertical; min-height: 70px; }
+  .submit-btn {
+    width: 100%;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .submit-btn:hover { background: var(--navy-light); }
+  .submit-btn:active { transform: scale(0.98); }
+  .success-msg {
+    display: none;
+    background: var(--success-bg);
+    border: 1.5px solid #68d391;
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+    color: var(--success);
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 14px;
+  }
+  .success-msg.show { display: block; }
+
+  /* ── Page Footer watermark ── */
+  .page-footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 14px 12px 6px;
+    opacity: 0.6;
+  }
+
+  /* ── App footer ── */
+  .app-footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 4px 0 3px;
+    flex-shrink: 0;
+    background: var(--bg);
+  }
+
+  /* ── Utilities ── */
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  .divider { height: 1px; background: var(--border); margin: 8px 0; }
+  .badge { display: inline-block; background: var(--gold); color: var(--navy); font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
+
+  /* ── Scrollbar ── */
+  .page-content::-webkit-scrollbar { width: 3px; }
+  .page-content::-webkit-scrollbar-track { background: transparent; }
+  .page-content::-webkit-scrollbar-thumb { background: rgba(27,46,75,0.2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <div class="brand">AlBar Health</div>
+      <div class="subtitle">عيادة د. محمد حسين البار</div>
+    </div>
+    <span style="font-size:11px;color:rgba(255,255,255,0.5);">أنف · أذن · حنجرة</span>
+  </header>
+
+  <!-- Content -->
+  <div class="page-content" id="pageContent">
+
+    <!-- ══════════════ TAB 1: HOME ══════════════ -->
+    <div class="tab-panel active" id="tab-home">
+
+      <div class="hero-card">
+        <div class="hero-greeting">مرحباً بك في</div>
+        <div class="hero-name">عيادة د. محمد حسين البار</div>
+        <div class="hero-spec">أستاذ مساعد واستشاري — طب وجراحة الأنف والأذن والحنجرة</div>
+      </div>
+
+      <!-- Announcements (shown only when non-empty) -->
+      <div class="announcements-section" id="announcementsSection" style="display:none;">
+        <div class="section-label">📢 إعلانات</div>
+        <div id="announcementsList"></div>
+      </div>
+
+      <div class="quick-grid">
+        <div class="quick-btn" onclick="switchTab('instructions')">
+          <div class="qb-icon">📋</div>
+          <div class="qb-label">إرشادات وتعليمات</div>
+        </div>
+        <div class="quick-btn" onclick="switchTab('medicines')">
+          <div class="qb-icon">💊</div>
+          <div class="qb-label">دليل الأدوية</div>
+        </div>
+        <div class="quick-btn" onclick="switchTab('contact')">
+          <div class="qb-icon">📅</div>
+          <div class="qb-label">حجز موعد</div>
+        </div>
+        <a class="quick-btn" href="https://wa.me/966582701349" target="_blank">
+          <div class="qb-icon">💬</div>
+          <div class="qb-label">تواصل واتساب</div>
+        </a>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-header">💡 نصيحة اليوم الصحية</div>
+        <div class="tip-text" id="dailyTip"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏥 مواعيد العيادة (ملخص)</div>
+        <div class="hours-row"><span class="hours-day">الحبيب — الأحد</span><span class="hours-time">11ص – 4م</span></div>
+        <div class="hours-row"><span class="hours-day">الحبيب — الاثنين</span><span class="hours-time">5م – 7م</span></div>
+        <div class="hours-row"><span class="hours-day">الحبيب — الثلاثاء</span><span class="hours-time">2م – 6م</span></div>
+        <div class="hours-row"><span class="hours-day">الحبيب — الأربعاء</span><span class="hours-time">4م – 7م</span></div>
+        <div class="hours-row"><span class="hours-day">الحبيب — الخميس</span><span class="hours-time">11ص – 3م</span></div>
+        <div class="hours-row"><span class="hours-day">KFHU — الثلاثاء</span><span class="hours-time">من 9ص</span></div>
+      </div>
+
+      <div class="page-footer">د. محمد حسين البار | Dr. Mohammad H. Al-Bar</div>
+    </div>
+
+    <!-- ══════════════ TAB 2: DOCTOR ══════════════ -->
+    <div class="tab-panel" id="tab-doctor">
+
+      <div class="card">
+        <div class="doctor-header">
+          <div class="doctor-avatar">👨‍⚕️</div>
+          <div class="doctor-info">
+            <div class="doc-name-ar">د. محمد حسين البار</div>
+            <div class="doc-name-en">Dr. Mohammad H. Al-Bar, MD</div>
+            <div class="doc-title">أستاذ مساعد واستشاري — طب وجراحة الأنف والأذن والحنجرة</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subspecialties -->
+      <div class="card">
+        <div class="card-title">🔬 التخصصات الدقيقة</div>
+        <ul class="spec-list">
+          <li>جراحة الجيوب الأنفية والأنف وقاع الجمجمة بالمنظار</li>
+          <li>جراحة الحنجرة والصوت</li>
+          <li>جراحة الأذن والتوازن</li>
+        </ul>
+      </div>
+
+      <!-- Qualifications -->
+      <div class="card">
+        <div class="card-title">🎓 المؤهلات العلمية</div>
+        <div class="qual-item">
+          <div class="qual-icon">🏛</div>
+          <div class="qual-text">
+            <div class="ql-title">زمالة جراحة الحنجرة والصوت</div>
+            <div class="ql-sub">جامعة ميامي، فلوريدا · 2014–2015</div>
+          </div>
+        </div>
+        <div class="qual-item">
+          <div class="qual-icon">🏛</div>
+          <div class="qual-text">
+            <div class="ql-title">زمالة جراحة الجيوب والأنف وقاع الجمجمة</div>
+            <div class="ql-sub">جامعة ميامي، فلوريدا · 2012–2014</div>
+          </div>
+        </div>
+        <div class="qual-item">
+          <div class="qual-icon">📜</div>
+          <div class="qual-text">
+            <div class="ql-title">البورد السعودي في الأنف والأذن والحنجرة</div>
+            <div class="ql-sub">2011</div>
+          </div>
+        </div>
+        <div class="qual-item">
+          <div class="qual-icon">📜</div>
+          <div class="qual-text">
+            <div class="ql-title">البورد العربي في الأنف والأذن والحنجرة</div>
+            <div class="ql-sub">2012</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Positions -->
+      <div class="card">
+        <div class="card-title">🏅 المناصب الحالية والسابقة</div>
+        <div class="position-row">
+          <div class="pos-dot"></div>
+          <div>
+            <div class="pos-title">أستاذ مساعد</div>
+            <div class="pos-sub">جامعة الإمام عبدالرحمن بن فيصل · 2015 – حتى الآن</div>
+          </div>
+        </div>
+        <div class="position-row">
+          <div class="pos-dot"></div>
+          <div>
+            <div class="pos-title">استشاري — مستشفى الملك فهد الجامعي (KFHU)، الخبر</div>
+            <div class="pos-sub">2015 – حتى الآن</div>
+          </div>
+        </div>
+        <div class="position-row">
+          <div class="pos-dot" style="background:var(--text-muted);"></div>
+          <div>
+            <div class="pos-title" style="color:var(--text-muted);">رئيس قسم الأنف والأذن والحنجرة (سابقاً)</div>
+            <div class="pos-sub">2018–2020</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social -->
+      <div class="card">
+        <div class="card-title">📲 التواصل الاجتماعي</div>
+        <div class="social-row">
+          <a class="social-chip" href="https://wa.me/966582701349" target="_blank">
+            <span>💬</span> واتساب العيادة
+          </a>
+          <a class="social-chip" href="https://twitter.com/MohammadHAlbar" target="_blank">
+            <span>𝕏</span> @MohammadHAlbar
+          </a>
+          <a class="social-chip" href="https://instagram.com/mohammmadhalbar" target="_blank">
+            <span>📸</span> @mohammmadhalbar
+          </a>
+        </div>
+      </div>
+
+      <div class="page-footer">د. محمد حسين البار | Dr. Mohammad H. Al-Bar</div>
+    </div>
+
+    <!-- ══════════════ TAB 3: INSTRUCTIONS ══════════════ -->
+    <div class="tab-panel" id="tab-instructions">
+
+      <!-- Search -->
+      <div class="search-bar-wrap">
+        <input class="search-bar" id="instrSearch" type="search" inputmode="search"
+          placeholder="ابحث عن إرشاد أو أدخل الرقم المختصر..."
+          oninput="filterInstructions(this.value)" />
+        <span class="search-icon">🔍</span>
+      </div>
+
+      <div id="noResults" class="no-results">لا توجد نتائج للبحث ‟<span id="noResultsTerm"></span>"</div>
+
+      <!-- Section 1: Post-Op -->
+      <div class="instr-section" id="sect-postop">
+        <div class="instr-section-title">قسم 1 — تعليمات ما بعد العمليات</div>
+
+        <div class="accordion" data-codes="301" data-title="جراحة الجيوب الأنفية والحاجز وقاع الجمجمة">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">301</span>
+              <span class="acc-title">جراحة الجيوب الأنفية والحاجز وقاع الجمجمة</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>استرح في المنزل لمدة أسبوع كامل بعد العملية.</li>
+              <li>ارفع رأسك (45°) عند النوم لتقليل التورم والنزيف.</li>
+              <li>استخدم غسول الأنف الملحي (سيلاين) بانتظام من اليوم الأول — قد يبدو غير مريح لكنه ضروري.</li>
+              <li>تجنب نفخ أنفك بقوة لمدة أسبوعين على الأقل.</li>
+              <li>تجنب المجهود البدني الشديد لمدة 3 أسابيع.</li>
+              <li>لا تأخذ أسبرين أو مسكنات مضادة للالتهاب بدون إذن الطبيب.</li>
+              <li>العطاس: إذا احتجت للعطس، افتح فمك لتقليل الضغط.</li>
+            </ul>
+            <div class="note">⚠️ راجع الطوارئ فوراً إذا كان النزيف لا يتوقف أو ظهرت حرارة > 39°م.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="302" data-title="اللوزتين والناميات اللحمية">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">302</span>
+              <span class="acc-title">اللوزتين والناميات (اللحمية)</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>ألم الحلق والأذن طبيعيان جداً ويستمران 10–14 يوماً.</li>
+              <li>تناول الطعام البارد واللين: آيس كريم، جيلي، شوربة باردة.</li>
+              <li>اشرب الماء والسوائل بكميات كبيرة للحفاظ على الترطيب.</li>
+              <li>تجنب الطعام الحار والخشن والحامضي لمدة أسبوعين.</li>
+              <li>الالتزام بالمضادات الحيوية والمسكنات في مواعيدها.</li>
+              <li>توقع اشتداد الألم خلال اليوم 3–5 — هذا طبيعي أثناء مرحلة الشفاء.</li>
+            </ul>
+            <div class="note">⚠️ راجع الطوارئ فوراً إذا كان النزيف أكثر من فنجان شاي في 30 دقيقة.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="303" data-title="فتح طبلة الأذن وأنابيب التهوية">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">303</span>
+              <span class="acc-title">فتح طبلة الأذن وأنابيب التهوية</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>تجنب دخول الماء إلى الأذن تماماً (سدادة أذن عند الاستحمام).</li>
+              <li>لا تسبح ولا تغطس في الماء حتى يُسمح لك من الطبيب.</li>
+              <li>قد يحدث بعض التسرب (إفرازات خفيفة) من الأذن — هذا طبيعي.</li>
+              <li>إذا وصفت لك قطرات الأذن، استخدمها حسب التعليمات.</li>
+              <li>تحسّن التهوية والسمع قد يكون تدريجياً خلال أسابيع.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Nose & Sinuses -->
+      <div class="instr-section" id="sect-nose">
+        <div class="instr-section-title">قسم 2 — الأنف والجيوب (401)</div>
+
+        <div class="accordion" data-codes="112 401" data-title="غسول الأنف">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">112</span>
+              <span class="acc-title">غسول الأنف</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>الغسول الأنفي بالمحلول الملحي يُنظّف الممرات ويُخفف الاحتقان.</p>
+            <ul>
+              <li>استخدم محلول ملحي دافئ (مريح للحرارة) وليس بارداً.</li>
+              <li>أمل رأسك للأمام فوق الحوض وأدخل الرأشة في الفتحة الأنفية العلوية.</li>
+              <li>اغسل بلطف حتى يخرج المحلول من الفتحة الأخرى.</li>
+              <li>لا تمصّ الأنف بقوة بعد الغسيل مباشرة.</li>
+              <li>كرر مرتين يومياً أو حسب توجيه الطبيب.</li>
+            </ul>
+            <div class="note">💡 المحلول الجاهز (مثل SINOMARIN أو NeilMed) متوفر في الصيدليات.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="113 401" data-title="بخاخ الأنف طريقة الاستخدام">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">113</span>
+              <span class="acc-title">بخاخ الأنف (طريقة الاستخدام)</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>نظّف أنفك بلطف قبل الاستخدام.</li>
+              <li>أمل رأسك للأمام قليلاً.</li>
+              <li>وجّه الرأشة نحو جدار الأنف الخارجي (وليس الحاجز الأنفي) لتجنب الجفاف.</li>
+              <li>استنشق بلطف أثناء الرش.</li>
+              <li>لا تشخّر (تمصّ) بشدة بعد الرش مباشرة.</li>
+              <li>ينظَّف الفوهة بمنديل بعد كل استخدام.</li>
+            </ul>
+            <div class="note">⚠️ بخاخات الكورتيزون تحتاج 2–4 أسابيع لتصل لأقصى فاعلية — لا توقف الاستخدام مبكراً.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="116 401" data-title="المنظار الأنفي">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">116</span>
+              <span class="acc-title">المنظار الأنفي</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>المنظار الأنفي (Nasoendoscopy) إجراء سريع وبسيط لفحص الأنف والحلق من الداخل.</p>
+            <ul>
+              <li>يُستخدم منظار رفيع ومرن (بضعة مليمترات) عبر الأنف.</li>
+              <li>قد تشعر بضغط خفيف أو دغدغة — لكنه غير مؤلم في الغالب.</li>
+              <li>يُبخ أحياناً مخدر موضعي في الأنف قبله.</li>
+              <li>المدة: 3–5 دقائق في الغالب.</li>
+              <li>يمكنك العودة لنشاطك الطبيعي فوراً.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="118 401" data-title="ضعف حاسة الشم">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">118</span>
+              <span class="acc-title">ضعف حاسة الشم</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>ضعف أو فقدان حاسة الشم (Hyposmia/Anosmia) له أسباب متعددة.</p>
+            <ul>
+              <li>الأسباب الشائعة: التهاب الجيوب المزمن، انحراف الحاجز، كوفيد-19، الحساسية.</li>
+              <li>تدريب الشم: يومياً، شمّ 4 روائح قوية (نعنع، قرفة، قهوة، وردة) لمدة 20 ثانية لكل منها.</li>
+              <li>استمر في التدريب لمدة 3–6 أشهر على الأقل.</li>
+              <li>علاج السبب الأساسي (تنظير أنف، علاج حساسية) يساعد على العودة.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="120 401" data-title="صداع الجيوب الأنفية">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">120</span>
+              <span class="acc-title">صداع الجيوب الأنفية</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>الصداع المصاحب لالتهاب الجيوب يكون في الجبهة والوجنتين ويشتد عند الانحناء للأمام.</li>
+              <li>الغسول الأنفي والبخاخ يُخففان الضغط.</li>
+              <li>الاستنشاق بالبخار (5–10 دق) يُريح.</li>
+              <li>المسكنات (باراسيتامول) تُساعد على المدى القصير.</li>
+              <li>إذا استمر أكثر من 10 أيام أو اشتد — راجع طبيبك لاحتمال عدوى بكتيرية.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="124 401" data-title="انحراف الحاجز الأنفي">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">124</span>
+              <span class="acc-title">انحراف الحاجز الأنفي</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>انحراف الحاجز يعني أن الغضروف الذي يفصل فتحتي الأنف ليس في المنتصف.</p>
+            <ul>
+              <li>الأعراض: صعوبة التنفس من جهة، شخير، جفاف، التهابات متكررة.</li>
+              <li>يُصحَّح جراحياً (رأب الحاجز) إذا أثّر على جودة الحياة.</li>
+              <li>العملية بسيطة ويمكن إجراؤها بالتزامن مع عملية الجيوب.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="125 401" data-title="تضخم القرنيات">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">125</span>
+              <span class="acc-title">تضخم القرنيات</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>القرنيات (Turbinates) هي طيات عظمية داخل الأنف تُرطّب وتُصفّي الهواء.</p>
+            <ul>
+              <li>تضخمها الشائع يسبب احتقاناً مزمناً وصعوبة تنفس.</li>
+              <li>العلاج الأولي: بخاخ الكورتيزون، غسول الأنف، علاج الحساسية.</li>
+              <li>إذا لم يستجب: تصغير القرنيات بالترددات الراديوية (إجراء مكتبي سريع).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="126 401" data-title="التهاب الجيوب الأنفية">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">126</span>
+              <span class="acc-title">التهاب الجيوب الأنفية</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>حاد (أقل من 4 أسابيع): غالباً فيروسي — محلول ملحي، راحة، مسكنات.</li>
+              <li>مزمن (أكثر من 12 أسبوعاً): يحتاج تقييم متخصص وربما منظار أنفي.</li>
+              <li>علامات تستوجب الطبيب: حرارة > 39°، ألم وجه شديد، تغير في الرؤية.</li>
+              <li>لا تستخدم المضادات الحيوية دون وصفة — أكثر من 90% من الحالات فيروسية.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Throat & Voice -->
+      <div class="instr-section" id="sect-throat">
+        <div class="instr-section-title">قسم 3 — الحنجرة والصوت والنوم (402)</div>
+
+        <div class="accordion" data-codes="114 402" data-title="الشخير وتوقف التنفس أثناء النوم">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">114</span>
+              <span class="acc-title">الشخير وتوقف التنفس أثناء النوم</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>توقف التنفس أثناء النوم (Sleep Apnea) حالة تستحق التقييم الجاد.</p>
+            <ul>
+              <li>الأعراض: شخير عالٍ، تعب نهاري، انقطاعات في التنفس يلاحظها الشريك.</li>
+              <li>التشخيص: دراسة نوم (Polysomnography).</li>
+              <li>العلاج: CPAP، تعديل وضعية النوم، إنقاص الوزن، وأحياناً تدخل جراحي.</li>
+              <li>الإهمال يزيد خطر أمراض القلب وضغط الدم.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="115 402" data-title="الارتجاع الحنجري LPR">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">115</span>
+              <span class="acc-title">الارتجاع الحنجري LPR</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>الارتجاع الحنجري-البلعومي يختلف عن حرقة المعدة العادية.</p>
+            <ul>
+              <li>الأعراض: بحة صباحية، تجمع بلغم، سعال مزمن، شعور بكتلة في الحلق.</li>
+              <li>تجنب: القهوة، الحامض، الحار، الشوكولاتة، الأكل قبل النوم بـ3 ساعات.</li>
+              <li>ارفع رأس السرير 15–20 سم.</li>
+              <li>لا تنم على معدة ممتلئة.</li>
+              <li>الدواء: يصفه الطبيب عادة لمدة 3–6 أشهر.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="121 402" data-title="البلغم">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">121</span>
+              <span class="acc-title">البلغم</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>إفراز بلغم طبيعي هو وظيفة الجهاز التنفسي لتنظيف وترطيب الممرات.</li>
+              <li>الأسباب الشائعة للزيادة: التهاب الجيوب، الحساسية، الارتجاع، الجفاف.</li>
+              <li>اشرب ماءً كافياً لتخفيف اللزوجة.</li>
+              <li>الغسول الأنفي يُقلل من نزول البلغم للحلق.</li>
+              <li>تجنب تنظيف الحلق بقوة — يُهيّج أكثر.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="123 402" data-title="جفاف الفم والحلق">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">123</span>
+              <span class="acc-title">جفاف الفم والحلق</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>اشرب 8–10 أكواب ماء يومياً.</li>
+              <li>تجنب الكافيين والكحول (يزيدان الجفاف).</li>
+              <li>امضغ علكة خالية من سكر لتحفيز اللعاب.</li>
+              <li>رطّب غرفة نومك بجهاز ترطيب (Humidifier) في الشتاء.</li>
+              <li>بعض الأدوية تسبب جفافاً — ناقش مع طبيبك إذا كانت مزمنة.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="127 402" data-title="صعوبة البلع">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">127</span>
+              <span class="acc-title">صعوبة البلع</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>صعوبة البلع (Dysphagia) لها أسباب كثيرة — لا تتجاهلها.</li>
+              <li>إذا استمرت أكثر من أسبوعين: راجع طبيبك لإجراء تنظير.</li>
+              <li>تناول الطعام بهدوء، ومضغ جيداً.</li>
+              <li>الطعام اللين والرطب أسهل للبلع أثناء العلاج.</li>
+            </ul>
+            <div class="note">⚠️ صعوبة بلع مفاجئة مع ألم شديد أو عدم قدرة على البلع نهائياً = طوارئ.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="131 402" data-title="التهاب اللوز">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">131</span>
+              <span class="acc-title">التهاب اللوز</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>الغالبية فيروسية لا تحتاج مضادات حيوية.</li>
+              <li>العلاج الداعم: مسكنات، سوائل دافئة، مضمضة بماء ملحي.</li>
+              <li>مؤشرات البكتيريا (Strep): ارتفاع حرارة، إفرازات بيضاء، لا سعال.</li>
+              <li>التهاب متكرر (5+ مرات/سنة): قد يستوجب إزالة اللوزتين.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="133 402" data-title="البحة وتغير الصوت">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">133</span>
+              <span class="acc-title">البحة وتغير الصوت</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>بحة عارضة بعد نزلة برد: تزول خلال 2–3 أسابيع بالراحة الصوتية.</li>
+              <li>بحة مستمرة أكثر من 3 أسابيع: يجب تنظير الحنجرة.</li>
+              <li>استرح صوتك: تجنب الصراخ والهمس (الهمس مجهد مثل الصراخ).</li>
+              <li>اشرب ماءً كافياً وتجنب الكافيين.</li>
+              <li>المدخنون: البحة المستمرة تستدعي تقييم عاجل.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="135 402" data-title="كيف أحافظ على صوتي">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">135</span>
+              <span class="acc-title">كيف أحافظ على صوتي</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>اشرب 8–10 أكواب ماء يومياً — الترطيب هو أفضل صديق لصوتك.</li>
+              <li>تجنب الصراخ والتحدث في ضوضاء عالية.</li>
+              <li>احمِ صوتك في الأجواء الباردة والجافة.</li>
+              <li>توقف عن التدخين — يُلحق ضرراً مباشراً بالحبال الصوتية.</li>
+              <li>تجنب مسح الحلق باستمرار.</li>
+              <li>الراحة الكافية تُجدد الحبال الصوتية.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Ear & Balance -->
+      <div class="instr-section" id="sect-ear">
+        <div class="instr-section-title">قسم 4 — الأذن والتوازن (403)</div>
+
+        <div class="accordion" data-codes="117 403" data-title="تمرين التوازن Epley">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">117</span>
+              <span class="acc-title">تمرين التوازن</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>تمارين إعادة التأهيل الدهليزي تُساعد في استعادة التوازن بعد اضطرابات الأذن الداخلية.</p>
+            <ul>
+              <li>افعلها في بيئة آمنة (قرب جدار أو شخص مساعد).</li>
+              <li>ابدأ ببطء وزد تدريجياً حسب التحمل.</li>
+              <li>الإحساس بالدوخة أثناء التمرين طبيعي — توقف لو اشتدت.</li>
+              <li>افعل التمارين التي حددها الطبيب أو المعالج الفيزيائي.</li>
+            </ul>
+            <div class="note">💡 استمر في التمارين حتى لو شعرت بدوخة خفيفة — هذا مؤشر على استجابة الجهاز الدهليزي.</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="119 403" data-title="قطرات الأذن">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">119</span>
+              <span class="acc-title">قطرات الأذن</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>سخّن القطرات بين يديك لمدة دقيقة قبل الاستخدام (تقليل الدوخة).</li>
+              <li>امل رأسك جانباً حتى تكون الأذن للأعلى.</li>
+              <li>اسحب الأذن للأعلى والخلف (البالغون) لتوسيع القناة.</li>
+              <li>اقطر العدد المحدد وابق ممداً 2–3 دقائق.</li>
+              <li>أغلق زجاجة القطرات جيداً بعد الاستخدام.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="128 403" data-title="شلل عصب الوجه Bell's Palsy">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">128</span>
+              <span class="acc-title">شلل عصب الوجه (بيل)</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>شلل عصب الوجه (Bell's Palsy) مؤقت في الغالب — تعافٍ جيد مع العلاج المبكر.</li>
+              <li>احمِ العين من الجفاف: قطرات دموع صناعية نهاراً، مرهم وشريط طبي ليلاً.</li>
+              <li>ابدأ الكورتيزون خلال 72 ساعة من البداية (يصفه الطبيب).</li>
+              <li>تمارين الوجه تُسرّع الشفاء — يحددها طبيبك.</li>
+              <li>توقع التحسن خلال 3–6 أشهر.</li>
+            </ul>
+            <div class="note">⚠️ شلل الوجه المفاجئ مع ألم شديد بالأذن أو بثور = راجع الطوارئ (قد يكون Ramsay Hunt).</div>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="129 403" data-title="الدوخة الحميدة BPPV">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">129</span>
+              <span class="acc-title">الدوخة الحميدة BPPV</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <p>الدوخة الوضعية الانتيابية الحميدة (BPPV) هي أشيع أسباب الدوخة.</p>
+            <ul>
+              <li>تحدث لأن بلورات صغيرة (أوتوليث) تتحرك للقناة الهلالية الخطأ.</li>
+              <li>مناورة Epley من قبل الطبيب تحل المشكلة في جلسة واحدة في أغلب الحالات.</li>
+              <li>بعد المناورة: تجنب الاستلقاء المفاجئ لـ 24 ساعة.</li>
+              <li>قد تتكرر — لكن المناورة تعالجها مجدداً.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="130 403" data-title="الشمع وتنظيف الأذن">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">130</span>
+              <span class="acc-title">الشمع (صملاخ الأذن)</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>الأذن تنظف نفسها — لا تدخل القطن (Q-tips) في قناة الأذن.</li>
+              <li>القطن يدفع الشمع للداخل ويُضغطه.</li>
+              <li>إذا كان الشمع مسدوداً: قطرات مليّنة للشمع أو غسيل عند الطبيب.</li>
+              <li>لا تستخدم مسواك الأذن الشمعي (غير فعّال وخطر).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Healthy Life -->
+      <div class="instr-section" id="sect-life">
+        <div class="instr-section-title">قسم 5 — نصائح الحياة الصحية (404)</div>
+
+        <div class="accordion" data-codes="136 404" data-title="كيف أخفف الارتجاع">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">136</span>
+              <span class="acc-title">كيف أخفف الارتجاع</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>تجنب الأكل قبل النوم بـ 3 ساعات على الأقل.</li>
+              <li>قلل: القهوة، الشاي، الحامض (ليمون، طماطم)، الحار، الشوكولاتة.</li>
+              <li>ارفع رأس السرير بوضع وسادتين أو رفع قائمتي الرأس 15 سم.</li>
+              <li>إنقاص الوزن يُقلل الضغط على المعدة.</li>
+              <li>تجنب الملابس الضيقة حول البطن.</li>
+              <li>لا تنم على جانبك الأيمن (الجانب الأيسر أفضل للارتجاع).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion" data-codes="137 404" data-title="نصائح لنوم أفضل">
+          <div class="acc-header" onclick="toggleAcc(this)">
+            <div class="acc-header-left">
+              <span class="acc-code">137</span>
+              <span class="acc-title">نصائح لنوم أفضل</span>
+            </div>
+            <span class="acc-chevron">▼</span>
+          </div>
+          <div class="acc-body">
+            <ul>
+              <li>نم وصحَ في نفس الوقت يومياً — حتى في الإجازة.</li>
+              <li>اجعل غرفتك باردة ومظلمة وهادئة.</li>
+              <li>تجنب الشاشات 30–60 دقيقة قبل النوم.</li>
+              <li>لا تنم نهاراً أكثر من 20 دقيقة.</li>
+              <li>تجنب الكافيين بعد الساعة 2م.</li>
+              <li>إذا كنت تشخر أو تستيقظ متعباً — قيّم لديك انقطاع تنفس.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Emergency -->
+      <div class="instr-section" id="sect-emergency">
+        <div class="instr-section-title">قسم 6 — تنبيهات الطوارئ</div>
+        <div class="emergency-box">
+          <div class="em-title">🚨 راجع الطوارئ فوراً إذا كان لديك:</div>
+          <ul>
+            <li>حرارة أكثر من 39°م</li>
+            <li>نزيف لا يتوقف (أكثر من فنجان شاي في 30 دقيقة)</li>
+            <li>تغيير مفاجئ في البصر أو الحالة العقلية</li>
+            <li>صعوبة تنفس شديدة أو شعور بانسداد الهواء</li>
+            <li>شلل مفاجئ في الوجه أو الأطراف</li>
+          </ul>
+          <a class="emergency-call" href="tel:997">📞 اتصل بالهلال الأحمر: 997</a>
+        </div>
+      </div>
+
+      <div class="page-footer">د. محمد حسين البار | Dr. Mohammad H. Al-Bar</div>
+    </div>
+
+    <!-- ══════════════ TAB 4: MEDICINES ══════════════ -->
+    <div class="tab-panel" id="tab-medicines">
+      <div class="card">
+        <div class="card-title">💊 دليل الأدوية الشائعة</div>
+        <ul class="med-list">
+          <li class="med-item">
+            <span class="med-icon">💊</span>
+            <div>
+              <div class="med-name">باراسيتامول (بنادول)</div>
+              <div class="med-desc">مسكن للألم وخافض للحرارة — الجرعة الشائعة 500–1000 مغ كل 6–8 ساعات.</div>
+            </div>
+          </li>
+          <li class="med-item">
+            <span class="med-icon">🌿</span>
+            <div>
+              <div class="med-name">بخاخ كورتيزون أنفي</div>
+              <div class="med-desc">لعلاج الحساسية والاحتقان المزمن — يحتاج 2–4 أسابيع ليصل لأقصى تأثير.</div>
+            </div>
+          </li>
+          <li class="med-item">
+            <span class="med-icon">💧</span>
+            <div>
+              <div class="med-name">محلول ملحي للأنف</div>
+              <div class="med-desc">آمن ومهم جداً — يُرطّب ويُنظّف ويُسرّع الشفاء. استخدمه بانتظام.</div>
+            </div>
+          </li>
+          <li class="med-item">
+            <span class="med-icon">🔵</span>
+            <div>
+              <div class="med-name">مضاد هيستامين (سيتريزين / لوراتادين)</div>
+              <div class="med-desc">لعلاج حساسية الأنف — بعضها يسبب نعاساً (خذه ليلاً).</div>
+            </div>
+          </li>
+          <li class="med-item">
+            <span class="med-icon">🟡</span>
+            <div>
+              <div class="med-name">مضادات الحموضة / مثبطات ضخ البروتون</div>
+              <div class="med-desc">للارتجاع — تُؤخذ قبل الأكل بـ30 دقيقة. لا توقفها فجأة.</div>
+            </div>
+          </li>
+          <li class="med-item">
+            <span class="med-icon">💊</span>
+            <div>
+              <div class="med-name">إيبوبروفين</div>
+              <div class="med-desc">مضاد التهاب ومسكن — لا تستخدمه بعد عمليات الأنف أو اللوزتين بدون إذن الطبيب.</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card" style="background:var(--danger-bg); border: 1px solid #feb2b2;">
+        <div class="card-title" style="color:var(--danger);">⚠️ تنبيه مهم</div>
+        <p style="font-size:13px; color:#c53030; line-height:1.7;">
+          المعلومات هنا للتثقيف فقط. لا تغيّر جرعاتك أو تأخذ أدوية جديدة بدون استشارة طبيبك. دائماً اتبع الوصفة الطبية.
+        </p>
+      </div>
+
+      <div class="page-footer">د. محمد حسين البار | Dr. Mohammad H. Al-Bar</div>
+    </div>
+
+    <!-- ══════════════ TAB 5: CONTACT ══════════════ -->
+    <div class="tab-panel" id="tab-contact">
+
+      <!-- Al-Habib Hospital -->
+      <div class="clinic-block">
+        <div class="clinic-block-header">
+          <div>
+            <div class="cbh-name">🏥 مستشفى الحبيب — الخبر</div>
+            <div class="cbh-sub">ساعات العيادة</div>
+          </div>
+        </div>
+        <div class="clinic-block-body">
+          <div class="hours-row"><span class="hours-day">الأحد</span><span class="hours-time">11ص – 4م</span></div>
+          <div class="hours-row"><span class="hours-day">الاثنين</span><span class="hours-time">5م – 7م</span></div>
+          <div class="hours-row"><span class="hours-day">الثلاثاء</span><span class="hours-time">2م – 6م</span></div>
+          <div class="hours-row"><span class="hours-day">الأربعاء</span><span class="hours-time">4م – 7م</span></div>
+          <div class="hours-row"><span class="hours-day">الخميس</span><span class="hours-time">11ص – 3م</span></div>
+        </div>
+      </div>
+
+      <!-- KFHU -->
+      <div class="clinic-block">
+        <div class="clinic-block-header">
+          <div>
+            <div class="cbh-name">🏛 المستشفى الجامعي (KFHU) — الخبر</div>
+            <div class="cbh-sub">ساعات العيادة</div>
+          </div>
+        </div>
+        <div class="clinic-block-body">
+          <div class="hours-row"><span class="hours-day">الثلاثاء</span><span class="hours-time">من 9ص</span></div>
+        </div>
+      </div>
+
+      <!-- Al-Habib Contacts -->
+      <div class="card">
+        <div class="card-title">📞 أرقام مستشفى الحبيب</div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">الرقم الموحد</div>
+            <div class="contact-number" dir="ltr">0138711111</div>
+          </div>
+          <a class="call-btn" href="tel:0138711111">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">استقبال العيادة</div>
+            <div class="contact-number" dir="ltr">0138711269</div>
+          </div>
+          <a class="call-btn" href="tel:0138711269">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">استقبال العيادة (2)</div>
+            <div class="contact-number" dir="ltr">0559903683</div>
+          </div>
+          <a class="call-btn" href="tel:0559903683">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">تنسيق العمليات (1)</div>
+            <div class="contact-number" dir="ltr">0138711206</div>
+          </div>
+          <a class="call-btn" href="tel:0138711206">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">تنسيق العمليات (2)</div>
+            <div class="contact-number" dir="ltr">0138711836</div>
+          </div>
+          <a class="call-btn" href="tel:0138711836">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">تنسيق العمليات (3)</div>
+            <div class="contact-number" dir="ltr">0557756821</div>
+          </div>
+          <a class="call-btn" href="tel:0557756821">📞 اتصال</a>
+        </div>
+      </div>
+
+      <!-- KFHU Contacts -->
+      <div class="card">
+        <div class="card-title">📞 أرقام المستشفى الجامعي (KFHU)</div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">القطاع الخاص (1)</div>
+            <div class="contact-number" dir="ltr">+966 13 896 6733</div>
+          </div>
+          <a class="call-btn" href="tel:+966138966733">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">القطاع الخاص (2)</div>
+            <div class="contact-number" dir="ltr">+966 56 844 1530</div>
+          </div>
+          <a class="call-btn" href="tel:+966568441530">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">القطاع الخاص (3)</div>
+            <div class="contact-number" dir="ltr">+966 56 846 1530</div>
+          </div>
+          <a class="call-btn" href="tel:+966568461530">📞 اتصال</a>
+        </div>
+        <div class="contact-row">
+          <div>
+            <div class="contact-label">واتساب الجامعي</div>
+          </div>
+          <a class="call-btn green" href="https://wa.me/966138957964" target="_blank">💬 واتساب</a>
+        </div>
+      </div>
+
+      <!-- WhatsApp Clinic -->
+      <div class="card">
+        <div class="card-title">💬 واتساب العيادة</div>
+        <a class="call-btn green wide" href="https://wa.me/966582701349" target="_blank">💬 تواصل عبر واتساب العيادة</a>
+      </div>
+
+      <!-- Appointment Form -->
+      <div class="card">
+        <div class="card-title">📅 طلب موعد</div>
+        <div id="apptForm">
+          <div class="form-group">
+            <label class="form-label" for="apptName">الاسم الكريم</label>
+            <input class="form-input" id="apptName" type="text" placeholder="اكتب اسمك هنا" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="apptPhone">رقم الجوال</label>
+            <input class="form-input" id="apptPhone" type="tel" inputmode="tel" placeholder="05XXXXXXXX" dir="ltr" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="apptClinic">العيادة</label>
+            <select class="form-select" id="apptClinic">
+              <option value="">-- اختر العيادة --</option>
+              <option value="مستشفى الحبيب - الخبر">مستشفى الحبيب - الخبر</option>
+              <option value="المستشفى الجامعي (KFHU) - الخبر">المستشفى الجامعي (KFHU) - الخبر</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="apptType">نوع الزيارة</label>
+            <select class="form-select" id="apptType">
+              <option value="">-- اختر نوع الزيارة --</option>
+              <option value="مريض جديد">مريض جديد</option>
+              <option value="متابعة">متابعة</option>
+              <option value="استشارة عملية">استشارة عملية</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="apptNotes">ملاحظات (اختياري)</label>
+            <textarea class="form-textarea" id="apptNotes" placeholder="أي معلومات إضافية تودّ إيصالها..."></textarea>
+          </div>
+          <button class="submit-btn" onclick="submitAppointment()">إرسال الطلب</button>
+        </div>
+        <div class="success-msg" id="apptSuccess">
+          ✅ تم استلام طلبك<br>
+          <span style="font-size:13px; font-weight:400;">سيتواصل معك الفريق قريباً</span>
+        </div>
+      </div>
+
+      <div class="page-footer">د. محمد حسين البار | Dr. Mohammad H. Al-Bar</div>
+    </div>
+
+  </div><!-- end page-content -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+      <span class="nav-icon">🏠</span>
+      <span>الرئيسية</span>
+    </div>
+    <div class="nav-item" id="nav-doctor" onclick="switchTab('doctor')">
+      <span class="nav-icon">👨‍⚕️</span>
+      <span>طبيبك</span>
+    </div>
+    <div class="nav-item" id="nav-instructions" onclick="switchTab('instructions')">
+      <span class="nav-icon">📋</span>
+      <span>إرشادات</span>
+    </div>
+    <div class="nav-item" id="nav-medicines" onclick="switchTab('medicines')">
+      <span class="nav-icon">💊</span>
+      <span>أدوية</span>
+    </div>
+    <div class="nav-item" id="nav-contact" onclick="switchTab('contact')">
+      <span class="nav-icon">📞</span>
+      <span>تواصل</span>
+    </div>
+  </nav>
+
+  <div class="app-footer">AlBar Health · د. محمد حسين البار</div>
+</div><!-- end app -->
+
+<script>
+// ── Announcements ──────────────────────────────────────────────
+const ANNOUNCEMENTS = [
+  // { date: "2026-04-04", text: "العيادة مفتوحة اليوم الخميس بشكل طبيعي" },
+  // Add/remove announcements here — uncomment or add new items
+];
+
+function renderAnnouncements() {
+  const active = ANNOUNCEMENTS.filter(a => a && a.text);
+  if (active.length === 0) return;
+  const section = document.getElementById('announcementsSection');
+  const list = document.getElementById('announcementsList');
+  section.style.display = 'block';
+  list.innerHTML = active.map(a => `
+    <div class="announcement-card">
+      <div class="announcement-icon">📢</div>
+      <div>
+        <div class="announcement-text">${escHtml(a.text)}</div>
+        ${a.date ? `<div class="announcement-date">${escHtml(a.date)}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Daily Tips ─────────────────────────────────────────────────
+const TIPS = [
+  "اشرب 8 أكواب ماء يومياً — الترطيب الجيد يُقلل الاحتقان ويحمي الحبال الصوتية.",
+  "نظّف أنفك بالغسول الملحي يومياً — يُقلل الالتهابات ويُسرّع شفاء الجيوب.",
+  "تجنب الهمس عند البحة — مجهود الهمس على الحبال الصوتية يساوي الصراخ.",
+  "لا تدخل القطن في أذنك — يضغط الشمع للداخل ويؤذي القناة.",
+  "النوم على جانبك الأيسر يُقلل ارتجاع المعدة ويحمي الحنجرة.",
+  "تمرين الشم اليومي (4 روائح × 20 ثانية) يُسرّع عودة حاسة الشم.",
+  "لا تؤخر متابعة البحة المستمرة أكثر من 3 أسابيع — راجع طبيبك.",
+  "رفع رأس السرير 15 سم يُقلل الارتجاع الليلي وأعراض الحنجرة الصباحية.",
+  "التوقف عن التدخين هو أهم خطوة لصحة حنجرتك وسمعك معاً.",
+  "الغضاريف الأنفية لا تتوقف عن النمو — لذلك يُصبح الأنف أكبر مع العمر."
+];
+
+function renderTip() {
+  const el = document.getElementById('dailyTip');
+  if (!el) return;
+  const idx = new Date().getDate() % TIPS.length;
+  el.textContent = TIPS[idx];
+}
+
+// ── Tab Switching ───────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const panel = document.getElementById('tab-' + name);
+  const nav = document.getElementById('nav-' + name);
+  if (panel) panel.classList.add('active');
+  if (nav) nav.classList.add('active');
+  document.getElementById('pageContent').scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ── Accordion ──────────────────────────────────────────────────
+function toggleAcc(header) {
+  const acc = header.closest('.accordion');
+  acc.classList.toggle('open');
+}
+
+// ── Instruction Search ─────────────────────────────────────────
+function filterInstructions(query) {
+  const q = query.trim().toLowerCase();
+  const accordions = document.querySelectorAll('#tab-instructions .accordion');
+  const sections = document.querySelectorAll('#tab-instructions .instr-section');
+  const noResults = document.getElementById('noResults');
+  const noTerm = document.getElementById('noResultsTerm');
+  let anyVisible = false;
+
+  accordions.forEach(acc => {
+    const codes = (acc.dataset.codes || '').toLowerCase();
+    const title = (acc.dataset.title || '').toLowerCase();
+    const body = acc.querySelector('.acc-body') ? acc.querySelector('.acc-body').textContent.toLowerCase() : '';
+    const match = !q || codes.includes(q) || title.includes(q) || body.includes(q);
+    acc.classList.toggle('hidden', !match);
+    if (match) {
+      anyVisible = true;
+      // Highlight matched
+      if (q) {
+        acc.classList.add('highlighted');
+        acc.classList.add('open');
+      } else {
+        acc.classList.remove('highlighted');
+        acc.classList.remove('open');
+      }
+    } else {
+      acc.classList.remove('highlighted');
+      if (q) acc.classList.remove('open');
+    }
+  });
+
+  // Hide empty sections
+  sections.forEach(sec => {
+    if (sec.id === 'sect-emergency') return; // always show
+    const visible = Array.from(sec.querySelectorAll('.accordion')).some(a => !a.classList.contains('hidden'));
+    sec.style.display = visible ? '' : (q ? 'none' : '');
+  });
+
+  if (q) {
+    noTerm.textContent = query;
+    noResults.style.display = anyVisible ? 'none' : 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+}
+
+// ── Appointment Form ───────────────────────────────────────────
+function submitAppointment() {
+  const name = document.getElementById('apptName').value.trim();
+  const phone = document.getElementById('apptPhone').value.trim();
+  const clinic = document.getElementById('apptClinic').value;
+  const visitType = document.getElementById('apptType').value;
+  const notes = document.getElementById('apptNotes').value.trim();
+
+  if (!name || !phone || !clinic || !visitType) {
+    alert('يرجى تعبئة جميع الحقول المطلوبة');
+    return;
+  }
+
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg && tg.sendData) {
+    const payload = JSON.stringify({ name, phone, clinic, visitType, notes });
+    tg.sendData(payload);
+  }
+
+  document.getElementById('apptForm').style.display = 'none';
+  document.getElementById('apptSuccess').classList.add('show');
+}
+
+// ── Telegram WebApp Init ───────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+  try {
+    const tg = window.Telegram && window.Telegram.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+  } catch (e) {}
+  renderAnnouncements();
+  renderTip();
+});
+</script>
+
+</body>
+</html>

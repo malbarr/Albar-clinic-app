@@ -1,7 +1,7 @@
 {
   "name": "AlBar Clinic",
   "short_name": "AlBar Clinic",
-  "start_url": "/",
+  "start_url": "/Albar-clinic-app/",
   "display": "standalone",
   "background_color": "#1B2E4B",
   "theme_color": "#1B2E4B",

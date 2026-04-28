@@ -1,0 +1,20 @@
+{
+  "name": "AlBar Clinic",
+  "short_name": "AlBar Clinic",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B2E4B",
+  "theme_color": "#1B2E4B",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

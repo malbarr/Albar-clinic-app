@@ -592,6 +592,27 @@
   .page-content::-webkit-scrollbar { width: 3px; }
   .page-content::-webkit-scrollbar-track { background: transparent; }
   .page-content::-webkit-scrollbar-thumb { background: rgba(27,46,75,0.2); border-radius: 3px; }
+  #pwa-install-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    align-items: center;
+    gap: 6px;
+    background: #1B2E4B;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(27,46,75,0.4);
+    white-space: nowrap;
+    font-family: inherit;
+  }
 </style>
 </head>
 <body>
@@ -1726,10 +1747,32 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
+<button id="pwa-install-btn" aria-label="تثبيت التطبيق">📲 تثبيت التطبيق</button>
+
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js');
 }
+
+let _pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  _pwaPrompt = e;
+  document.getElementById('pwa-install-btn').style.display = 'flex';
+});
+document.getElementById('pwa-install-btn').addEventListener('click', async function() {
+  if (!_pwaPrompt) return;
+  _pwaPrompt.prompt();
+  const result = await _pwaPrompt.userChoice;
+  if (result.outcome === 'accepted') {
+    document.getElementById('pwa-install-btn').style.display = 'none';
+  }
+  _pwaPrompt = null;
+});
+window.addEventListener('appinstalled', function() {
+  document.getElementById('pwa-install-btn').style.display = 'none';
+  _pwaPrompt = null;
+});
 </script>
 </body>
 </html>
